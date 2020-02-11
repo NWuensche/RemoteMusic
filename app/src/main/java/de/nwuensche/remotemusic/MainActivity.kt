@@ -34,6 +34,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setLastValues()
 
+        //Ads
+        MobileAds.initialize(this) {}
+        mInterstitialAd = InterstitialAd(this)
+
+        val real = "ca-app-pub-8653539039842404/7386853395"
+        mInterstitialAd.adUnitId = real
+        //TODO Need to reload ad after every show?
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+
+
         connectButton.setOnClickListener {
             toast("Connecting...")
 
@@ -53,8 +63,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         shutdownButton.setOnClickListener {
-            doIfConnected ("Turning off!") {shutdown()} //TODO Closed
+            doIfConnected ("Turning off!") {shutdown()}
             mInterstitialAd.show()
+            mInterstitialAd.loadAd(AdRequest.Builder().build())
         }
 
         startButton.setOnClickListener {
@@ -64,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 
         stopButton.setOnClickListener {
             doIfConnected ("Stopped!") {stopMusic()}
+            mInterstitialAd.show()
+            mInterstitialAd.loadAd(AdRequest.Builder().build())
         }
 
         increaseButton.setOnClickListener {
