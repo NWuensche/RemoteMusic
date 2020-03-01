@@ -1,6 +1,7 @@
 package de.nwuensche.remotemusic
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.SpannableStringBuilder
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         //Ads
         MobileAds.initialize(this) {}
         mInterstitialAd = InterstitialAd(this)
+
+        if (packageManager.isWearable()) return // Don't init all of this for Wearables
 
         val real = "ca-app-pub-8653539039842404/7386853395"
         mInterstitialAd.adUnitId = real
@@ -134,6 +137,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setLastValues() {
+        if (packageManager.isWearable()) return //No Textboxes for watch, so loading would be problematic
+
         iPEditText.text = getSharedPreference("IP", "").toEditable()
         usernameEditText.text = getSharedPreference("USERNAME", "").toEditable()
         passwordEditText.text = getSharedPreference("PASSWORD", "").toEditable()
@@ -234,6 +239,10 @@ class MainActivity : AppCompatActivity() {
         channelssh.connect()
         channelssh.disconnect()
     }
+}
+
+fun PackageManager.isWearable(): Boolean {
+    return hasSystemFeature(PackageManager.FEATURE_WATCH)
 }
 
 fun Context.toast(message: CharSequence) =
